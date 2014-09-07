@@ -92,6 +92,8 @@ public class FlickrConn {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(new StringReader(xmlString));
+
+            parseItems(items, parser);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
         } catch (XmlPullParserException xppe) {
