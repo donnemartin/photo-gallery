@@ -40,4 +40,4 @@ Donne Martin - <donne.martin@gmail.com>
     See the License for the specific language governing permissions and
     limitations under the License.
 
-![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/Flickr.png)
+![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/flickr.png)
