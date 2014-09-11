@@ -6,7 +6,9 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.*;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -41,8 +45,10 @@ public class PhotoGalleryFragment extends Fragment {
         // By default, handler will attach itself to the looper of the current
         // thread, which is the main thread
         mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
-        mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
-            public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
+        mThumbnailThread
+            .setListener(new ThumbnailDownloader.Listener<ImageView>() {
+            public void onThumbnailDownloaded(ImageView imageView,
+                                              Bitmap thumbnail) {
                 // isVisibile ensures we are not setting the image on a stale
                 // ImageView
                 if (isVisible()) {
@@ -69,6 +75,21 @@ public class PhotoGalleryFragment extends Fragment {
         // Ensure we configure the appropriate adapter when the new GridView
         // is created, such as on a rotation.
         setupAdapter();
+
+        mGridView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> gridView,
+                                    View view,
+                                    int pos,
+                                    long id) {
+                GalleryItem item = mItems.get(pos);
+
+                Uri photoPageUri = Uri.parse(item.getPhotoPageUrl());
+                Intent i = new Intent(Intent.ACTION_VIEW, photoPageUri);
+
+                startActivity(i);
+            }
+        });
 
         return view;
     }
