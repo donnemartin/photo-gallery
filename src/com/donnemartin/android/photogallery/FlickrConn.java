@@ -20,10 +20,14 @@ public class FlickrConn {
 
     public static final String TAG = "FlickerConn";
 
+    public static final String PREF_SEARCH_QUERY ="searchQuery";
+
     private static final String ENDPOINT =
         "https://api.flickr.com/services/rest/";
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
+    private static final String METHOD_SEARCH = "flickr.photos.search";
     private static final String PARAM_EXTRAS = "extras";
+    private static final String PARAM_TEXT = "text";
 
     // Specifies the name of the photo XML element used by XmlPullParser to
     // identify each photo in the XML
@@ -36,6 +40,7 @@ public class FlickrConn {
         // working with request methods, response codes, streaming methods, etc
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         ByteArrayOutputStream out = null;
+        byte[] outBytes = null;
 
         try {
 
@@ -53,9 +58,7 @@ public class FlickrConn {
                     out.write(buffer, 0, bytesRead);
                 }
                 out.close();
-            }
-            else {
-                out = null;
+                outBytes = out.toByteArray();
             }
         } catch (SocketTimeoutException ste) {
             Log.e(TAG, "Socket timeout trying to read bytes", ste);
@@ -67,25 +70,17 @@ public class FlickrConn {
             connection.disconnect();
         }
 
-        return out.toByteArray();
+        return outBytes;
     }
 
     String getUrl(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public ArrayList<GalleryItem> fetchItems() {
+    public ArrayList<GalleryItem> downloadGalleryItems(String  url) {
         ArrayList<GalleryItem> items = new ArrayList<GalleryItem>();
 
         try {
-            // Build the complete URL for the API request with Uri.Builder,
-            // a convenience class for creating properly escaped parameterized
-            // URLs
-            String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendQueryParameter("method", METHOD_GET_RECENT)
-                .appendQueryParameter("api_key", Creds.API_KEY)
-                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                    .build().toString();
             String xmlString = getUrl(url);
             Log.i(TAG, "Received xml: " + xmlString);
 
@@ -99,8 +94,29 @@ public class FlickrConn {
         } catch (XmlPullParserException xppe) {
             Log.e(TAG, "Failed to parse items", xppe);
         }
-
         return items;
+    }
+
+    public ArrayList<GalleryItem> fetchItems() {
+        // Build the complete URL for the API request with Uri.Builder,
+        // a convenience class for creating properly escaped parameterized
+        // URLs
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_GET_RECENT)
+                .appendQueryParameter("api_key", Creds.API_KEY)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .build().toString();
+        return downloadGalleryItems(url);
+    }
+
+    public ArrayList<GalleryItem> search(String query) {
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_SEARCH)
+                .appendQueryParameter("api_key", Creds.API_KEY)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .appendQueryParameter(PARAM_TEXT, query)
+                .build().toString();
+        return downloadGalleryItems(url);
     }
 
     void parseItems(ArrayList<GalleryItem> items, XmlPullParser parser)

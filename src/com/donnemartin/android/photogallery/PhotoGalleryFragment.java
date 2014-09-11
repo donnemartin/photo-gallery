@@ -1,13 +1,19 @@
 package com.donnemartin.android.photogallery;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -27,10 +33,9 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+        setHasOptionsMenu(true);
 
-        // Start AsyncTask to fire up a background thread and calls
-        // doInBackground() method
-        new FetchItemsTask().execute();
+        updateItems();
 
         // By default, handler will attach itself to the looper of the current
         // thread, which is the main thread
@@ -81,6 +86,42 @@ public class PhotoGalleryFragment extends Fragment {
         mThumbnailThread.clearQueue();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_photo_gallery, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean selectionHandled = false;
+
+        switch (item.getItemId()) {
+            case R.id.menu_item_search:
+                getActivity().onSearchRequested();
+                selectionHandled = true;
+                break;
+            case R.id.menu_item_clear:
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putString(FlickrConn.PREF_SEARCH_QUERY, null)
+                        .commit();
+                updateItems();
+                selectionHandled = true;
+                break;
+            default:
+                selectionHandled = super.onOptionsItemSelected(item);
+        }
+
+        return selectionHandled;
+    }
+
+    public void updateItems() {
+        // Start AsyncTask to fire up a background thread and calls
+        // doInBackground() method
+        new FetchItemsTask().execute();
+    }
+
     void setupAdapter() {
         // GridView has no GridFragment class, so we have to build our own
         // adapter management.  We look at the current model state and configure
@@ -103,7 +144,25 @@ public class PhotoGalleryFragment extends Fragment {
 
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
-            return new FlickrConn().fetchItems();
+            ArrayList<GalleryItem> list;
+            Activity activity = getActivity();
+
+            if (activity == null) {
+                list = new ArrayList<GalleryItem>();
+            } else {
+                String query = PreferenceManager
+                    .getDefaultSharedPreferences(activity)
+                    .getString(FlickrConn.PREF_SEARCH_QUERY, null);
+
+                if (query != null) {
+                    list = new FlickrConn().search(query);
+                }
+                else {
+                    list = new FlickrConn().fetchItems();
+                }
+            }
+
+            return list;
         }
 
         @Override
@@ -117,8 +176,6 @@ public class PhotoGalleryFragment extends Fragment {
             setupAdapter();
         }
     }
-
-
 
     private class GalleryItemAdapter extends ArrayAdapter<GalleryItem> {
         public GalleryItemAdapter(ArrayList<GalleryItem> items) {
@@ -135,7 +192,6 @@ public class PhotoGalleryFragment extends Fragment {
             GalleryItem item = getItem(position);
             ImageView imageView = (ImageView)convertView
                     .findViewById(R.id.gallery_item_imageView);
-            imageView.setImageResource(R.drawable.ic_launcher);
             mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 
             return convertView;
