@@ -7,8 +7,8 @@ Android features used in this app:
 
 * Activities
 * Fragments
-* Gridviews
-* Action Bar
+* GridViews
+* Action Bars
 * Intents
 * HTTP and Background Tasks
 * Networking
@@ -16,13 +16,13 @@ Android features used in this app:
 * XML
 * Loopers
 * Handlers
-* HandlerThread
+* HandlerThreads
 * Messages and Message Handlers
-* Search and SearchView
+* Search and SearchViews
 
 ##Developed By
 
-* Donne Martin - <donne.martin@gmail.com>
+Donne Martin - <donne.martin@gmail.com>
 
 ##License
 
@@ -40,4 +40,4 @@ Android features used in this app:
     See the License for the specific language governing permissions and
     limitations under the License.
 
-![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/Flickr.png)
+![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/Flickr.png)
