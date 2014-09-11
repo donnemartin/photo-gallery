@@ -17,6 +17,7 @@ import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -87,13 +88,33 @@ public class PhotoGalleryFragment extends Fragment {
     }
 
     @Override
+    @TargetApi(11)
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_photo_gallery, menu);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Pull out the SearchView
+            MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+            SearchView searchView = (SearchView)searchItem.getActionView();
+
+            // Get the data from our searchable.xml as a SearchableInfo
+            // SearchManager is a system serice that is responsible for all
+            // things search related
+            SearchManager searchManager = (SearchManager)getActivity()
+                    .getSystemService(Context.SEARCH_SERVICE);
+            ComponentName name = getActivity().getComponentName();
+            // Root around in the manifest, package up the relevant info
+            SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
+
+            searchView.setSearchableInfo(searchInfo);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Note, SearchView does not generate any events here
+        // These callbacks are only for older devices
         boolean selectionHandled = false;
 
         switch (item.getItemId()) {
