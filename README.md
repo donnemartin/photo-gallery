@@ -20,26 +20,12 @@ Android features used in this app:
 * Messages and Message Handlers
 * Search and SearchViews
 
-##Developed By
+##Credits
 
-Donne Martin - <donne.martin@gmail.com>
+This project uses code as a guide from the excellent book [Android Programming: The Big Nerd Ranch Guide](http://www.bignerdranch.com/we-write/android-programming.html).
 
-##License
+You can [download the original exercises for Android](http://www.bignerdranch.com/solutions/AndroidProgramming.zip) from the Big Nerd Ranch website.
 
-    Copyright 2014 Donne Martin
+It will evolve to include tweaks and additional functionality.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
-<p align="center">
-    [<img src="https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/flickr.png" style="width: 400px;">]
-</p>
+![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/flickr.png)
