@@ -166,22 +166,22 @@ public class PollService extends IntentService {
         @Override
         public void onReceive(Context c, Intent intent) {
             Log.i(TAG, "received result: " + getResultCode());
-            if (getResultCode() != Activity.RESULT_OK)
-                // a foreground activity cancelled the broadcast
-                return;
 
-            int requestCode = intent.getIntExtra("REQUEST_CODE", 0);
-            Notification notification =
-                (Notification)intent.getParcelableExtra("NOTIFICATION");
+            // Ensure a foreground activity hasn't cancelled the broadcast
+            if (getResultCode() == Activity.RESULT_OK) {
+                int requestCode = intent.getIntExtra("REQUEST_CODE", 0);
+                Notification notification =
+                    (Notification) intent.getParcelableExtra("NOTIFICATION");
 
-            NotificationManager notificationManager = (NotificationManager)
-                c.getSystemService(NOTIFICATION_SERVICE);
+                NotificationManager notificationManager = (NotificationManager)
+                        c.getSystemService(NOTIFICATION_SERVICE);
 
-            // requestCode is the identifier for the notification and should
-            // unique across the application.  You can implement a progress
-            // bar or dynamic visual by passing in a second notification with
-            // the same ID
-            notificationManager.notify(requestCode, notification);
+                // requestCode is the identifier for the notification and should
+                // unique across the application.  You can implement a progress
+                // bar or dynamic visual by passing in a second notification
+                // with the same ID
+                notificationManager.notify(requestCode, notification);
+            }
         }
     };
 
