@@ -21,6 +21,7 @@ public class FlickrConn {
     public static final String TAG = "FlickerConn";
 
     public static final String PREF_SEARCH_QUERY ="searchQuery";
+    public static final String PREF_LAST_RESULT_ID ="lastResultId";
 
     private static final String ENDPOINT =
         "https://api.flickr.com/services/rest/";
@@ -43,7 +44,6 @@ public class FlickrConn {
         byte[] outBytes = null;
 
         try {
-
             // Connect to the endpoint (GET), use getOutputStream for POST
             InputStream in = connection.getInputStream();
 

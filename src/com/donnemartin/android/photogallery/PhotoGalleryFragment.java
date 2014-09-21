@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -25,11 +24,11 @@ import android.widget.SearchView;
 
 import java.util.ArrayList;
 
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
     GridView mGridView;
     ArrayList<GalleryItem> mItems;
-    ThumbnailDownloader<ImageView> mThumbnailThread;
+    ThumbnailDownloader mThumbnailThread;
 
     private static final String TAG = "PhotoGalleryFragment";
 
@@ -44,7 +43,7 @@ public class PhotoGalleryFragment extends Fragment {
 
         // By default, handler will attach itself to the looper of the current
         // thread, which is the main thread
-        mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
+        mThumbnailThread = new ThumbnailDownloader(new Handler());
         mThumbnailThread
             .setListener(new ThumbnailDownloader.Listener<ImageView>() {
             public void onThumbnailDownloaded(ImageView imageView,
@@ -123,7 +122,7 @@ public class PhotoGalleryFragment extends Fragment {
             // SearchManager is a system serice that is responsible for all
             // things search related
             SearchManager searchManager = (SearchManager)getActivity()
-                    .getSystemService(Context.SEARCH_SERVICE);
+                .getSystemService(Context.SEARCH_SERVICE);
             ComponentName name = getActivity().getComponentName();
             // Root around in the manifest, package up the relevant info
             SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
@@ -151,11 +150,37 @@ public class PhotoGalleryFragment extends Fragment {
                 updateItems();
                 selectionHandled = true;
                 break;
+            case R.id.menu_item_toggle_polling:
+                boolean shouldStartAlarm =
+                    !PollService.isServiceAlarmOn(getActivity());
+                PollService.setServiceAlarm(getActivity(), shouldStartAlarm);
+
+                // On 3.0 and later devices, the action bar does not
+                // automatically update itself
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    getActivity().invalidateOptionsMenu();
+                }
+
+                selectionHandled = true;
+                break;
             default:
                 selectionHandled = super.onOptionsItemSelected(item);
         }
 
         return selectionHandled;
+    }
+
+    @Override
+    // Called whenever the menu needs to be configured
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem toggleItem = menu.findItem(R.id.menu_item_toggle_polling);
+        if (PollService.isServiceAlarmOn(getActivity())) {
+            toggleItem.setTitle(R.string.stop_polling);
+        } else {
+            toggleItem.setTitle(R.string.start_polling);
+        }
     }
 
     public void updateItems() {
@@ -174,8 +199,7 @@ public class PhotoGalleryFragment extends Fragment {
         if (getActivity() != null && mGridView != null) {
             if (mItems != null) {
                 mGridView.setAdapter(new GalleryItemAdapter(mItems));
-            }
-            else {
+            } else {
                 mGridView.setAdapter(null);
             }
         }
@@ -214,6 +238,14 @@ public class PhotoGalleryFragment extends Fragment {
             // to update the UI within it
             mItems = items;
 
+            if (items.size() > 0) {
+                String resultId = items.get(0).getId();
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putString(FlickrConn.PREF_LAST_RESULT_ID, resultId)
+                    .commit();
+            }
+
             // Configure the appropriate adapter when we update our items
             setupAdapter();
         }
@@ -233,7 +265,8 @@ public class PhotoGalleryFragment extends Fragment {
 
             GalleryItem item = getItem(position);
             ImageView imageView = (ImageView)convertView
-                    .findViewById(R.id.gallery_item_imageView);
+                .findViewById(R.id.gallery_item_imageView);
+            imageView.setImageResource(R.drawable.black);
             mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 
             return convertView;

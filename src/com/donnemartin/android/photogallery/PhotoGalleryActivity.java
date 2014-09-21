@@ -38,9 +38,9 @@ public class PhotoGalleryActivity extends SingleFragmentActivity {
             // and allows us to group sets of changes together in transactions,
             // which is helpful if you have alot of changes.
             PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putString(FlickrConn.PREF_SEARCH_QUERY, query)
-                    .commit();
+                .edit()
+                .putString(FlickrConn.PREF_SEARCH_QUERY, query)
+                .commit();
         }
 
         // Whenever we receive a new intent, we want to refresh the items

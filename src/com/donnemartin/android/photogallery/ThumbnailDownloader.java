@@ -12,8 +12,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 
-public class ThumbnailDownloader<Handle> extends HandlerThread {
+public class ThumbnailDownloader extends HandlerThread {
     // Class to download thumbnails on demand to avoid isses when there is
     // a slow connection or a large number of thumbnails stored in memory
     // AsyncTask is the easiest way to get a background thread, but it is
@@ -25,17 +26,17 @@ public class ThumbnailDownloader<Handle> extends HandlerThread {
     Handler mHandler;
     // Synchronized hash map.  Using Token as a key, store and retrieve the
     // URL associated with a particular Token.
-    Map<Handle,String> requestMap =
-            Collections.synchronizedMap(new HashMap<Handle,String>());
+    Map<ImageView,String> requestMap =
+            Collections.synchronizedMap(new HashMap<ImageView,String>());
     Handler mResponseHandler;
-    Listener<Handle> mListener;
+    Listener<ImageView> mListener;
 
-    public interface Listener<Handle> {
+    public interface Listener<ImageView> {
         // Add a Listener interface to communicate the responses with
-        void onThumbnailDownloaded(Handle handle, Bitmap thumbnail);
+        void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail);
     }
 
-    public void setListener(Listener<Handle> listener) {
+    public void setListener(Listener<ImageView> listener) {
         mListener = listener;
     }
 
@@ -62,20 +63,20 @@ public class ThumbnailDownloader<Handle> extends HandlerThread {
                     // Message.obj is an Object.  Type erasure makes it
                     // impossible to make this cast
                     @SuppressWarnings("unchecked")
-                    Handle handle = (Handle)msg.obj;
+                    ImageView imageView = (ImageView)msg.obj;
                     Log.i(TAG,
-                          "Got a request for url: " + requestMap.get(handle));
-                    handleRequest(handle);
+                      "Got a request for url: " + requestMap.get(imageView));
+                    handleRequest(imageView);
                 }
             }
         };
     }
 
-    private void handleRequest(final Handle handle) {
+    private void handleRequest(final ImageView imageView) {
         // Use FlickrConn to download bytes from the URL and turn them
         // into a bitmap
         try {
-            final String url = requestMap.get(handle);
+            final String url = requestMap.get(imageView);
             if (url != null) {
                 byte[] bitmapBytes = new FlickrConn().getUrlBytes(url);
 
@@ -96,11 +97,11 @@ public class ThumbnailDownloader<Handle> extends HandlerThread {
                         // recycles its views to ensure the Token gets the
                         // correct image, even if another request has been
                         // made in the meantime
-                        if (requestMap.get(handle) == url) {
+                        if (requestMap.get(imageView) == url) {
                             // Remove this token since we have handled it
-                            requestMap.remove(handle);
+                            requestMap.remove(imageView);
                             // Set the bitmap on the token
-                            mListener.onThumbnailDownloaded(handle, bitmap);
+                            mListener.onThumbnailDownloaded(imageView, bitmap);
                         }
                     }
                 });
@@ -110,15 +111,15 @@ public class ThumbnailDownloader<Handle> extends HandlerThread {
         }
     }
 
-    public void queueThumbnail(Handle handle, String url) {
-        requestMap.put(handle, url);
+    public void queueThumbnail(ImageView imageView, String url) {
+        requestMap.put(imageView, url);
 
         // Build the message using obtainMessage rather than building it by hand
         // ObtainMessage pulls from a common recycling pool to avoid creating
         // new message objects
         mHandler
-                .obtainMessage(MESSAGE_DOWNLOAD, handle)
-                .sendToTarget();
+            .obtainMessage(MESSAGE_DOWNLOAD, imageView)
+            .sendToTarget();
     }
 
     public void clearQueue() {
