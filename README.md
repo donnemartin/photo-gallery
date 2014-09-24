@@ -48,5 +48,5 @@ This project uses code as a guide from the excellent book [Android Programming: 
 
 You can [download the original exercises for Android](http://www.bignerdranch.com/solutions/AndroidProgramming.zip) from the Big Nerd Ranch website.
 
-![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/res/raw/flickr.png)
+![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/src/main/res/raw/flickr.png)
 
