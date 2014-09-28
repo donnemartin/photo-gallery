@@ -45,8 +45,8 @@ public class ThumbnailDownloader extends HandlerThread {
         mResponseHandler = responseHandler;
     }
 
-    // Supress warnings about subclassing Handler.
-    // The hander will be kept alive by its Looper.  If your handler is an
+    // Suppress warnings about subclassing Handler.
+    // The handler will be kept alive by its Looper.  If your handler is an
     // anonymous inner class, it is easy to leak memory accidentally through an
     // implicit object reference.  However, everything here is tied to the
     // HandlerThread so there is no danger of leaking anything
@@ -97,7 +97,7 @@ public class ThumbnailDownloader extends HandlerThread {
                         // recycles its views to ensure the Token gets the
                         // correct image, even if another request has been
                         // made in the meantime
-                        if (requestMap.get(imageView) == url) {
+                        if (requestMap.get(imageView).equals(url)) {
                             // Remove this token since we have handled it
                             requestMap.remove(imageView);
                             // Set the bitmap on the token

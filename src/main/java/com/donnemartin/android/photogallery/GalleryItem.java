@@ -7,6 +7,7 @@ public class GalleryItem {
     private String mUrl;
     private String mOwner;
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getCaption() {
         return mCaption;
     }
@@ -28,6 +29,7 @@ public class GalleryItem {
         mUrl = url;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getOwner() {
         return mOwner;
     }

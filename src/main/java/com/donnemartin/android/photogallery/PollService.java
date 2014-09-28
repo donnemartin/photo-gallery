@@ -171,7 +171,7 @@ public class PollService extends IntentService {
             if (getResultCode() == Activity.RESULT_OK) {
                 int requestCode = intent.getIntExtra("REQUEST_CODE", 0);
                 Notification notification =
-                    (Notification) intent.getParcelableExtra("NOTIFICATION");
+                    intent.getParcelableExtra("NOTIFICATION");
 
                 NotificationManager notificationManager = (NotificationManager)
                         c.getSystemService(NOTIFICATION_SERVICE);

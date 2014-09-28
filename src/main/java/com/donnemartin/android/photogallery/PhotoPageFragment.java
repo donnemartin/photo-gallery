@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class PhotoPageFragment extends VisibleFragment {
 
     private String mUrl;
+    @SuppressWarnings("FieldCanBeLocal")
     private WebView mWebView;
     private static final int MAX_PROGRESS = 100;
 

@@ -40,7 +40,6 @@ public class FlickrConn {
         // Cast to HttpURLConnection to give us HTTP-specific interfaces for
         // working with request methods, response codes, streaming methods, etc
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        ByteArrayOutputStream out = null;
         byte[] outBytes = null;
 
         try {
@@ -48,8 +47,8 @@ public class FlickrConn {
             InputStream in = connection.getInputStream();
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                out = new ByteArrayOutputStream();
-                int bytesRead = 0;
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int bytesRead;
                 byte[] buffer = new byte[1024];
 
                 // Call read repeatedly until the connection runs out of data
@@ -102,20 +101,20 @@ public class FlickrConn {
         // a convenience class for creating properly escaped parameterized
         // URLs
         String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendQueryParameter("method", METHOD_GET_RECENT)
-                .appendQueryParameter("api_key", Creds.API_KEY)
-                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                .build().toString();
+            .appendQueryParameter("method", METHOD_GET_RECENT)
+            .appendQueryParameter("api_key", Creds.API_KEY)
+            .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+            .build().toString();
         return downloadGalleryItems(url);
     }
 
     public ArrayList<GalleryItem> search(String query) {
         String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendQueryParameter("method", METHOD_SEARCH)
-                .appendQueryParameter("api_key", Creds.API_KEY)
-                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                .appendQueryParameter(PARAM_TEXT, query)
-                .build().toString();
+            .appendQueryParameter("method", METHOD_SEARCH)
+            .appendQueryParameter("api_key", Creds.API_KEY)
+            .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+            .appendQueryParameter(PARAM_TEXT, query)
+            .build().toString();
         return downloadGalleryItems(url);
     }
 

@@ -30,8 +30,6 @@ public class PhotoGalleryFragment extends VisibleFragment {
     ArrayList<GalleryItem> mItems;
     ThumbnailDownloader mThumbnailThread;
 
-    private static final String TAG = "PhotoGalleryFragment";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +39,14 @@ public class PhotoGalleryFragment extends VisibleFragment {
 
         updateItems();
 
-        // By default, handler will attach itself to the looper of the current
+        // By default, handler will attach itself to the Looper of the current
         // thread, which is the main thread
         mThumbnailThread = new ThumbnailDownloader(new Handler());
         mThumbnailThread
             .setListener(new ThumbnailDownloader.Listener<ImageView>() {
             public void onThumbnailDownloaded(ImageView imageView,
                                               Bitmap thumbnail) {
-                // isVisibile ensures we are not setting the image on a stale
+                // isVisible ensures we are not setting the image on a stale
                 // ImageView
                 if (isVisible()) {
                     imageView.setImageBitmap(thumbnail);
@@ -121,7 +119,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
             SearchView searchView = (SearchView)searchItem.getActionView();
 
             // Get the data from our searchable.xml as a SearchableInfo
-            // SearchManager is a system serice that is responsible for all
+            // SearchManager is a system service that is responsible for all
             // things search related
             SearchManager searchManager = (SearchManager)getActivity()
                 .getSystemService(Context.SEARCH_SERVICE);
@@ -137,7 +135,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Note, SearchView does not generate any events here
         // These callbacks are only for older devices
-        boolean selectionHandled = false;
+        boolean selectionHandled;
 
         switch (item.getItemId()) {
             case R.id.menu_item_search:
@@ -197,7 +195,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         // the adapter appropriately
 
         // Fragments can exist unattached from any activity, which can occur
-        // since we are using AyncTask.
+        // since we are using AsyncTask.
         if (getActivity() != null && mGridView != null) {
             if (mItems != null) {
                 mGridView.setAdapter(new GalleryItemAdapter(mItems));

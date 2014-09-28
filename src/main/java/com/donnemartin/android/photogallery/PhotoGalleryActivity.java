@@ -36,7 +36,7 @@ public class PhotoGalleryActivity extends SingleFragmentActivity {
             // private permissions) that is shared across the entire app
             // SharedPreferences.Editor stashes values into SharedPreferences
             // and allows us to group sets of changes together in transactions,
-            // which is helpful if you have alot of changes.
+            // which is helpful if you have a lot of changes.
             PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
                 .putString(FlickrConn.PREF_SEARCH_QUERY, query)

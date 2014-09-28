@@ -13,17 +13,17 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
 
     @Override
-    public void onReceive(Context c, Intent i) {
+    public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "received result: " + getResultCode());
 
         // A foreground activity might have cancelled the broadcast
         if (getResultCode() == Activity.RESULT_OK) {
-            int requestCode = i.getIntExtra("REQUEST_CODE", 0);
+            int requestCode = intent.getIntExtra("REQUEST_CODE", 0);
             Notification notification =
-                (Notification) i.getParcelableExtra("NOTIFICATION");
+                intent.getParcelableExtra("NOTIFICATION");
 
             NotificationManager notificationManager = (NotificationManager)
-                c.getSystemService(Context.NOTIFICATION_SERVICE);
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(requestCode, notification);
         }
     }
