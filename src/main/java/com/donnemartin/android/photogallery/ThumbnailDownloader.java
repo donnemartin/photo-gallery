@@ -97,7 +97,8 @@ public class ThumbnailDownloader extends HandlerThread {
                         // recycles its views to ensure the Token gets the
                         // correct image, even if another request has been
                         // made in the meantime
-                        if (requestMap.get(imageView).equals(url)) {
+                        String urlStored = requestMap.get(imageView);
+                        if (urlStored != null && urlStored.equals(url)) {
                             // Remove this token since we have handled it
                             requestMap.remove(imageView);
                             // Set the bitmap on the token
