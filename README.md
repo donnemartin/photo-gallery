@@ -1,7 +1,9 @@
 photogallery
 ============
 
-Android Flickr photo gallery app, still early in its development.
+[![Build Status](https://travis-ci.org/donnemartin/photogallery.svg?branch=master)](https://travis-ci.org/donnemartin/photogallery)
+
+Android Flickr photo gallery app.
 
 Compatible with Gingerbread and later devices.
 
@@ -42,11 +44,4 @@ Android features used in this app:
     See the License for the specific language governing permissions and
     limitations under the License.
 
-##Credits
-
-This project uses code as a guide from the excellent book [Android Programming: The Big Nerd Ranch Guide](http://www.bignerdranch.com/we-write/android-programming.html).
-
-You can [download the original exercises for Android](http://www.bignerdranch.com/solutions/AndroidProgramming.zip) from the Big Nerd Ranch website.
-
 ![alt tag](https://raw.githubusercontent.com/donnemartin/photogallery/master/src/main/res/raw/flickr.png)
-
