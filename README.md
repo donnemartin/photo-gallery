@@ -3,7 +3,7 @@ photogallery
 
 [![Build Status](https://travis-ci.org/donnemartin/photogallery.svg?branch=master)](https://travis-ci.org/donnemartin/photogallery)
 
-Android Flickr photo gallery app.
+Android Flickr photo gallery Gradle app integrated with Travis CI and the Android Testing Framework.
 
 Compatible with Gingerbread and later devices.
 
