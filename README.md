@@ -1,3 +1,5 @@
+![alt text](http://donnemartin.com/wp-content/uploads/2014/11/phonecam_cover.jpg)
+
 photogallery
 ============
 
